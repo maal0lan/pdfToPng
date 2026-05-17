@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "../Sidebar/Sidebar";
-<<<<<<< HEAD
 import PdfPng from "../../pages/PdfPng";
 import ImageWebp from "../../pages/ImageWbp";
 import ImageJpg from "../../pages/ImageJpg";
 import RemoveBg from "../../pages/RemoveBg";
 import ImageUpscale from "../../pages/ImageUpscale";
-=======
 import { Outlet, useLocation } from "react-router-dom";
->>>>>>> upstream/main
+import ImageCompress from "../../pages/ImageCompress";
+import RotateFlip from "../../pages/RotateFlip";
+import ImageBase64 from "../../pages/ImageBase64";
 import { Menu } from "lucide-react";
 
 const Layout = () => {
@@ -37,7 +37,6 @@ const Layout = () => {
     setIsMobileMenuOpen(false);
   };
 
-<<<<<<< HEAD
   const renderContent = () => {
     switch (activeTab) {
       case "pdf-to-png":
@@ -50,13 +49,16 @@ const Layout = () => {
         return <RemoveBg />;
       case "image-upscale":
         return <ImageUpscale />;
+      case "image-compress":
+        return <ImageCompress />;
+      case "rotate-flip":
+        return <RotateFlip />;
+      case "image-to-base64":
+        return <ImageBase64 />;
       default:
         return <PdfPng />;
     }
   };
-
-=======
->>>>>>> upstream/main
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       <Sidebar
