@@ -8,6 +8,7 @@ import {
   RotateCcw,
   X,
   Sliders,
+  Gauge,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
@@ -54,6 +55,12 @@ const Sidebar = ({ activeTab, isMobileMenuOpen, isMobile, onClose }) => {
       label: "Image Compressor",
       icon: <Sliders className="w-5 h-5" />,
       description: "Compress images",
+    },
+    {
+      id: "image-dpi",
+      label: "Image DPI Converter",
+      icon: <Gauge className="w-5 h-5" />,
+      description: "Change image DPI",
     },
   ];
 
