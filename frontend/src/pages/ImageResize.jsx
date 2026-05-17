@@ -5,6 +5,8 @@ import { Expand, Image as ImageIcon } from "lucide-react";
 
 function ImageResize() {
   const [dimensions, setDimensions] = useState({ width: "1280", height: "720" });
+  const [unit, setUnit] = useState("px");
+  const [maintainAspectRatio, setMaintainAspectRatio] = useState(false);
 
   const validateFile = useCallback((selectedFile) => {
     if (selectedFile && selectedFile.type.startsWith("image/")) {
@@ -49,10 +51,26 @@ function ImageResize() {
   ];
 
   const areValidDimensions = () => {
-    const width = Number.parseInt(dimensions.width, 10);
-    const height = Number.parseInt(dimensions.height, 10);
+    const width = unit === "px"
+      ? Number.parseInt(dimensions.width, 10)
+      : Number.parseFloat(dimensions.width);
+    const height = unit === "px"
+      ? Number.parseInt(dimensions.height, 10)
+      : Number.parseFloat(dimensions.height);
 
-    return Number.isInteger(width) && width > 0 && Number.isInteger(height) && height > 0;
+    const isValidWidth = unit === "px"
+      ? Number.isInteger(width) && width > 0
+      : Number.isFinite(width) && width > 0;
+
+    if (maintainAspectRatio) {
+      return isValidWidth;
+    }
+
+    const isValidHeight = unit === "px"
+      ? Number.isInteger(height) && height > 0
+      : Number.isFinite(height) && height > 0;
+
+    return isValidWidth && isValidHeight;
   };
 
   const handleDimensionChange = (field, value) => {
@@ -60,6 +78,7 @@ function ImageResize() {
   };
 
   const applyPreset = (width, height) => {
+    setUnit("px");
     setDimensions({ width: String(width), height: String(height) });
   };
 
@@ -73,7 +92,11 @@ function ImageResize() {
     }
 
     if (!areValidDimensions()) {
-      setStatusMessage("Please enter valid positive width and height values");
+      setStatusMessage(
+        maintainAspectRatio
+          ? `Please enter a valid positive width in ${unit}`
+          : `Please enter valid positive width and height values in ${unit}`,
+      );
       setTimeout(() => setStatusMessage(""), 3000);
       return;
     }
@@ -81,8 +104,10 @@ function ImageResize() {
     setLoading(true);
     const formData = new FormData();
     formData.append("image", file);
-    formData.append("width", Number.parseInt(dimensions.width, 10));
-    formData.append("height", Number.parseInt(dimensions.height, 10));
+    formData.append("width", dimensions.width);
+    formData.append("height", dimensions.height);
+    formData.append("unit", unit);
+    formData.append("maintainAspectRatio", String(maintainAspectRatio));
 
     try {
       const response = await fetch(`${import.meta.env.VITE_API_URL}/resizeImage`, {
@@ -110,7 +135,9 @@ function ImageResize() {
         window.URL.revokeObjectURL(url);
 
         setStatusMessage(
-          `Success! Image resized to ${dimensions.width} x ${dimensions.height}.`,
+          maintainAspectRatio
+            ? `Success! Image resized using width ${dimensions.width} ${unit} with aspect ratio preserved.`
+            : `Success! Image resized to ${dimensions.width} x ${dimensions.height} ${unit}.`,
         );
         setTimeout(() => setStatusMessage(""), 5000);
       } else {
@@ -150,7 +177,7 @@ function ImageResize() {
           inputId="resize-input"
           defaultIcon={<Expand className="w-16 h-16" />}
           defaultText="Upload image for resizing"
-          supportText="Choose a preset or enter custom dimensions"
+          supportText="Choose a preset or enter custom dimensions and unit"
         />
 
         {file && (
@@ -184,15 +211,47 @@ function ImageResize() {
               })}
             </div>
 
+            <div className="mb-6 text-left">
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Resize Unit
+              </label>
+              <select
+                value={unit}
+                onChange={(e) => setUnit(e.target.value)}
+                className="w-full rounded-lg border border-gray-200 px-4 py-3 text-gray-700 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+              >
+                <option value="px">Pixels (px)</option>
+                <option value="mm">Millimeters (mm)</option>
+                <option value="cm">Centimeters (cm)</option>
+              </select>
+            </div>
+
+            <label className="flex items-center gap-3 mb-6 text-left rounded-lg border border-gray-200 px-4 py-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={maintainAspectRatio}
+                onChange={(e) => setMaintainAspectRatio(e.target.checked)}
+                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <div>
+                <span className="block text-sm font-semibold text-gray-700">
+                  Keep aspect ratio
+                </span>
+                <span className="block text-xs text-gray-500">
+                  Height will be auto-calculated from the width in {unit}.
+                </span>
+              </div>
+            </label>
+
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <label className="text-left">
                 <span className="block text-sm font-semibold text-gray-700 mb-2">
-                  Width
+                  Width ({unit})
                 </span>
                 <input
                   type="number"
                   min="1"
-                  step="1"
+                  step={unit === "px" ? "1" : "0.1"}
                   value={dimensions.width}
                   onChange={(e) => handleDimensionChange("width", e.target.value)}
                   className="w-full rounded-lg border border-gray-200 px-4 py-3 text-gray-700 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
@@ -201,16 +260,22 @@ function ImageResize() {
 
               <label className="text-left">
                 <span className="block text-sm font-semibold text-gray-700 mb-2">
-                  Height
+                  Height ({unit})
                 </span>
                 <input
                   type="number"
                   min="1"
-                  step="1"
+                  step={unit === "px" ? "1" : "0.1"}
                   value={dimensions.height}
                   onChange={(e) => handleDimensionChange("height", e.target.value)}
-                  className="w-full rounded-lg border border-gray-200 px-4 py-3 text-gray-700 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                  disabled={maintainAspectRatio}
+                  className="w-full rounded-lg border border-gray-200 px-4 py-3 text-gray-700 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed"
                 />
+                {maintainAspectRatio && (
+                  <span className="block mt-2 text-xs text-gray-500">
+                    Height will be calculated automatically from the original image ratio.
+                  </span>
+                )}
               </label>
             </div>
           </div>
@@ -227,7 +292,7 @@ function ImageResize() {
               Resizing...
             </>
           ) : (
-            "Resize Image"
+            `Resize Image (${unit})`
           )}
         </button>
 

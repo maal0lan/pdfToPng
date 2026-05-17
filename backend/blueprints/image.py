@@ -22,6 +22,32 @@ def _parse_positive_int(value, field_name):
     return parsed
 
 
+def _parse_positive_number(value, field_name):
+    try:
+        parsed = float(value)
+    except (TypeError, ValueError):
+        raise ValueError(f"{field_name} must be a positive number")
+
+    if parsed <= 0:
+        raise ValueError(f"{field_name} must be a positive number")
+
+    return parsed
+
+
+def _convert_to_pixels(value, unit, field_name):
+    if unit == "px":
+        return _parse_positive_int(value, field_name)
+
+    parsed_value = _parse_positive_number(value, field_name)
+    unit_per_inch = 25.4 if unit == "mm" else 2.54
+    pixels = round(parsed_value * 96 / unit_per_inch)
+
+    if pixels <= 0:
+        raise ValueError(f"{field_name} must convert to a positive pixel value")
+
+    return pixels
+
+
 def _convert_alpha_to_rgb(img):
     if img.mode in ("RGBA", "LA") or (
         img.mode == "P" and "transparency" in img.info
@@ -166,8 +192,13 @@ def resize_image():
         if "image" not in request.files:
             return error("No image provided")
 
-        width = _parse_positive_int(request.form.get("width"), "width")
-        height = _parse_positive_int(request.form.get("height"), "height")
+        unit = request.form.get("unit", "px").lower()
+        if unit not in {"px", "mm", "cm"}:
+            return error("unit must be one of: px, mm, cm", 400)
+
+        maintain_aspect_ratio = (
+            request.form.get("maintainAspectRatio", "false").lower() == "true"
+        )
 
         file = request.files["image"]
         filename = secure_filename(file.filename)
@@ -189,6 +220,14 @@ def resize_image():
 
         if img.format not in format_map:
             return error("Unsupported image format. Please use PNG, JPG, JPEG, or WEBP.", 400)
+
+        width = _convert_to_pixels(request.form.get("width"), unit, "width")
+        if maintain_aspect_ratio:
+            height = round(width * img.height / img.width)
+            if height <= 0:
+                return error("Calculated height must be a positive pixel value", 400)
+        else:
+            height = _convert_to_pixels(request.form.get("height"), unit, "height")
 
         output_format, mimetype, default_ext = format_map[img.format]
         output_ext = original_ext if original_ext in {".png", ".jpg", ".jpeg", ".webp"} else default_ext
