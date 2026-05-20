@@ -1,5 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import "./App.css";
+import PdfMerge from "./pages/PdfMerge";
+import PdfSign from "./pages/PdfSign";
 import Layout from "./components/Layout/Layout";
 import LandingPage from "./pages/LandingPage";
 import ImagePdf from "./pages/ImagePdf";
@@ -33,6 +35,9 @@ function App() {
         <Route path="/image-dpi" element={<ImageDpi />} />
         <Route path="/image-metadata" element={<ImageMetadata />} />
         <Route path="/image-to-pdf" element={<ImagePdf />} />
+        <Route path="/pdf-merge" element={<PdfMerge />} />
+        <Route path="/pdf-sign" element={<PdfSign />} />
+        <Route path="/pdf-sign" element={<div>PDF SIGN TEST PAGE</div>} />
       </Route>
     </Routes>
   );

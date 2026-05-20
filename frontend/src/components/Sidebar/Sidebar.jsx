@@ -14,6 +14,7 @@ import {
   Code,
   ChevronLeft,
   ChevronRight,
+  PenTool,
 } from "lucide-react";
 
 const Sidebar = ({ activeTab, isMobileMenuOpen, isMobile, onClose }) => {
@@ -35,6 +36,18 @@ const Sidebar = ({ activeTab, isMobileMenuOpen, isMobile, onClose }) => {
     label: "Image to PDF",
     icon: <FileImage className="w-5 h-5" />,
     description: "Convert images into PDF",
+    },
+    {
+  id: "pdf-merge",
+  label: "PDF Merge",
+  icon: <FileText className="w-5 h-5" />,
+  description: "Merge multiple PDFs",
+    },
+    {
+  id: "pdf-sign",
+  label: "PDF Sign",  
+  icon: <PenTool className="w-5 h-5" />,
+  description: "Sign your PDF files",
     },
     {
       id: "image-compress",
