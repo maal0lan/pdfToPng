@@ -50,12 +50,14 @@ def create_app():
     app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
     
     from blueprints.pdf import pdf_bp
+    from blueprints.pdf_to_docx import pdf_docx_bp
     from blueprints.image import image_bp
     from blueprints.removebg import remove_bp
     from blueprints.rotate_flip import rotate_flip_bp
     from blueprints.dpi_converter import dpi_bp
     from blueprints.metadata_viewer import metadata_bp
     app.register_blueprint(pdf_bp)
+    app.register_blueprint(pdf_docx_bp)
     app.register_blueprint(image_bp)
     app.register_blueprint(remove_bp)
     app.register_blueprint(rotate_flip_bp)
