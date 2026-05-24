@@ -19,6 +19,7 @@ import ImageDpi from "./pages/ImageDpi";
 import ImageGrayScale from "./pages/ImageGrayScale";
 import ImageMetadata from "./pages/ImageMetadata";
 import ImageBase64 from "./pages/ImageBase64";
+import ImageToSVG from "./pages/ImageToSVG";
 import NotFound from './pages/NotFound';
 import ErrorBoundary from "./ErrorBoundary";
 
@@ -39,6 +40,7 @@ function App() {
           
           <Route path="/image-to-webp" element={<ImageWebp />} />
           <Route path="/image-to-jpg" element={<ImageJpg />} />
+          <Route path="/image-to-svg" element={<ImageToSVG />} />
           <Route path="/image-to-grayscale" element={<ImageGrayScale />} />
           <Route path="/remove-bg" element={<RemoveBg />} />
           <Route path="/rotate-flip" element={<RotateFlip />} />

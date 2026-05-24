@@ -152,6 +152,15 @@ const tools = [
     gradient: "from-blue-600/10 to-indigo-600/10",
     iconGradient: "from-blue-600 to-indigo-600",
   },
+  {
+    id: "image-to-svg",
+    name: "Image to SVG",
+    icon: <Code />,
+    description: "Convert PNG/JPG images into scalable SVG vector graphics.",
+    path: "/image-to-svg",
+    gradient: "from-emerald-500/10 to-blue-500/10",
+    iconGradient: "from-emerald-500 to-blue-500",
+  },
 ];
 
 export default tools;
