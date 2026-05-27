@@ -57,6 +57,7 @@ def create_app():
     from blueprints.rotate_flip import rotate_flip_bp
     from blueprints.dpi_converter import dpi_bp
     from blueprints.metadata_viewer import metadata_bp
+    from blueprints.watermark import watermark_bp
     from blueprints.merge_pdf import merge_pdf_bp   
     app.register_blueprint(pdf_bp)
     app.register_blueprint(pdf_docx_bp)
@@ -66,5 +67,6 @@ def create_app():
     app.register_blueprint(rotate_flip_bp)
     app.register_blueprint(dpi_bp)
     app.register_blueprint(metadata_bp)
+    app.register_blueprint(watermark_bp)
     app.register_blueprint(merge_pdf_bp)      
     return app

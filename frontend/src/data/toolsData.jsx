@@ -13,6 +13,7 @@ import {
   PenTool,
   Expand,
   Palette,
+  Droplets, 
 } from "lucide-react";
 
 const tools = [
@@ -88,6 +89,15 @@ const tools = [
     path: "/image-to-jpg",
     gradient: "from-blue-500/10 to-indigo-500/10",
     iconGradient: "from-blue-500 to-indigo-500",
+  },
+  {
+  id: "image-watermark",
+  name: "Image Watermark",
+  icon: <Droplets />,
+  description: "Add text or image watermarks to protect your photos with custom positioning and opacity.",
+  path: "/image-watermark",
+  gradient: "from-cyan-500/10 to-teal-500/10",
+  iconGradient: "from-cyan-500 to-teal-500",
   },
   {
     id: "image-to-grayscale",
