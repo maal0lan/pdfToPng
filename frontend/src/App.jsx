@@ -32,6 +32,7 @@ import ImageBase64 from "./pages/ImageBase64";
 import ImageToSVG from "./pages/ImageToSVG";
 import NotFound from './pages/NotFound';
 import ErrorBoundary from "./ErrorBoundary";
+import BlurImage from "./pages/BlurImage";
 
 function App() {
   return (
@@ -52,7 +53,7 @@ function App() {
           <Route path="/pdf-rotate-flip" element={<PdfRotateFlip />} />
           <Route path="/pdf-sign" element={<PdfSign />} />
           <Route path="/pdf-watermark" element={<PDFWatermark />} />
-          
+          <Route path="/image-blur" element={<BlurImage />} />
           <Route path="/image-to-webp" element={<ImageWebp />} />
           <Route path="/image-to-jpg" element={<ImageJpg />} />
           <Route path="/image-ocr" element={<ImageOCR />} />
