@@ -7,9 +7,8 @@ on:
     branches: [main]
 
 jobs:
-  lint-and-build:
+  frontend:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -31,3 +30,21 @@ jobs:
       - name: Build frontend
         working-directory: frontend
         run: npm run build
+
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: pip install -r requirements.txt
+
+      - name: Syntax check
+        working-directory: backend
+        run: python -m py_compile main.py && find . -name "*.py" -exec python -m py_compile {} +
