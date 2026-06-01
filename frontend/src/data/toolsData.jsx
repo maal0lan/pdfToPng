@@ -226,6 +226,7 @@ const tools = [
     gradient: "from-slate-500/10 to-slate-700/10",
     iconGradient: "from-slate-500 to-slate-700",
   },
+  {
     id: "image-blur",
     name: "Image Blur",
     icon: <Image />,
